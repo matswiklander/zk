@@ -2,7 +2,7 @@ import os
 
 import click
 
-from zettel import BaseZettel, is_taken, initiate_templates_directory
+from zettel import is_taken, initiate_templates_directory, zettel_factory
 
 
 @click.group()
@@ -15,17 +15,7 @@ def cli():
 def add(zettel_type: str):
     initiate_templates_directory()
 
-    try:
-        zettel_class = \
-            [zettel_class for zettel_class in BaseZettel.__subclasses__() if
-             zettel_class().mangled_name() == zettel_type][0]
-    except IndexError:
-        click.secho('Unknown zettel type, available zettel types are:', fg='green')
-        zettel_types = sorted([zettel_class().mangled_name() for zettel_class in BaseZettel.__subclasses__()])
-        click.secho('\n'.join(map(str, zettel_types)), fg='green')
-        return
-
-    zettel = zettel_class()
+    zettel = zettel_factory(zettel_type)
 
     if not is_taken(zettel.id):
         zettel.create()

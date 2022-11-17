@@ -44,6 +44,20 @@ def initiate_templates_directory():
                 fp.write(zettel_class().template)
 
 
+def zettel_factory(zettel_type):
+    try:
+        zettel_class = [zettel_class for zettel_class in BaseZettel.__subclasses__() if
+                        zettel_class().mangled_name() == zettel_type][0]
+    except IndexError:
+        click.secho('Unknown zettel type, available zettel types are:', fg='green')
+        zettel_types = sorted([zettel_class().mangled_name() for zettel_class in BaseZettel.__subclasses__()])
+        click.secho('\n'.join(map(str, zettel_types)), fg='green')
+        return None
+
+    zettel = zettel_class()
+    return zettel
+
+
 class BaseZettel:
     template = None
 
@@ -54,10 +68,8 @@ class BaseZettel:
         os.makedirs(os.sep.join([os.getcwd(), self.mangled_name()]), exist_ok=True)
 
         with open(os.sep.join([os.getcwd(), self.mangled_name(), self.id + '.md']), 'w', encoding='utf-8') as out_fp:
-            with open(os.sep.join([os.getcwd(), 'templates', self.mangled_name() + '.md']), 'r',
-                      encoding='utf-8') as template_fp:
-                template = template_fp.read()
-                out_fp.write(template)
+            template = self.__fetch_template()
+            out_fp.write(template)
 
     def mangled_name(self):
         name = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', self.__class__.__name__[0:-6])
@@ -69,6 +81,13 @@ class BaseZettel:
 
     def __extract_all_tags(self):
         pass
+
+    def __fetch_template(self):
+        with open(os.sep.join([os.getcwd(), 'templates', self.mangled_name() + '.md']), 'r',
+                  encoding='utf-8') as template_fp:
+            template = template_fp.read()
+
+        return template
 
 
 class LinkZettel(BaseZettel):
