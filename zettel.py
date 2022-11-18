@@ -171,7 +171,28 @@ Summary
 
 ---
 
-§reference
+§link
+'''
+
+    def __init__(self):
+        super().__init__()
+
+
+class MermaidZettel(BaseZettel):
+    template = '''# Mermaid
+
+---
+
+Summary
+
+---
+
+```mermaid
+```
+
+---
+
+§mermaid
 '''
 
     def __init__(self):
