@@ -277,3 +277,8 @@ class ZettelRepository:
             return True
 
         return False
+
+
+class ZettelSearchEngine:
+    def __init__(self):
+        pass

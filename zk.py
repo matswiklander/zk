@@ -25,7 +25,9 @@ def tags(tags):
     filtered_zettels = ZettelRepository().all_zettels
 
     for tag in tags:
-        click.echo(tag)
+        filtered_zettels = [zettel for zettel in filtered_zettels if tag in zettel.tags]
+
+    click.echo(filtered_zettels)
 
 
 if __name__ == '__main__':
