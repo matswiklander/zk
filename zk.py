@@ -1,6 +1,6 @@
 import click
 
-from zettel import ZettelRepository
+from engine import ZettelRepository, ZettelSearchEngine
 
 
 @click.group()
@@ -22,12 +22,21 @@ def search():
 @search.command()
 @click.argument('tags', nargs=-1)
 def tags(tags):
-    filtered_zettels = ZettelRepository().all_zettels
+    zettel_repository = ZettelRepository()
 
-    for tag in tags:
-        filtered_zettels = [zettel for zettel in filtered_zettels if tag in zettel.tags]
+    zettel_search_engine = ZettelSearchEngine(zettel_repository)
 
-    click.echo(filtered_zettels)
+    zettel_search_engine.search_tags(tags, True)
+
+
+@search.command()
+@click.argument('texts', nargs=-1)
+def text(texts):
+    zettel_repository = ZettelRepository()
+
+    zettel_search_engine = ZettelSearchEngine(zettel_repository)
+
+    zettel_search_engine.search_text(texts, True)
 
 
 if __name__ == '__main__':
