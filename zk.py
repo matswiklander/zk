@@ -1,6 +1,8 @@
 import click
 
-from engine import ZettelRepository, ZettelSearchEngine
+from zettel_repository import ZettelRepository
+from zettel_linter import ZettelLinter
+from zettel_search_engine import ZettelSearchEngine
 
 
 @click.group()
@@ -37,6 +39,15 @@ def text(texts):
     zettel_search_engine = ZettelSearchEngine(zettel_repository)
 
     zettel_search_engine.search_text(texts, True)
+
+
+@cli.command()
+def lint():
+    zettel_repository = ZettelRepository()
+
+    zettel_linter = ZettelLinter(zettel_repository)
+
+    zettel_linter.lint()
 
 
 if __name__ == '__main__':
