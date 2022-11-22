@@ -2,6 +2,8 @@ import os
 import re
 from datetime import datetime
 
+import click
+
 
 def fetch_all_zettel_types():
     all_zettel_types = {zettel_class().snake_case(): zettel_class for zettel_class in BaseZettel.__subclasses__()}
@@ -19,6 +21,7 @@ class BaseZettel:
         self.body = ''
         self.path = ''
         self.tags = []
+        self.lint_errors = []
 
     def create(self):
         os.makedirs(os.sep.join([os.getcwd(), self.snake_case()]), exist_ok=True)
