@@ -33,14 +33,14 @@ class ZettelSearchEngine:
 
         column_width = 0
 
+        if not len(zettels):
+            click.secho('No results', fg='white')
+            return
+
         for zettel in zettels:
             width = len(zettel.path)
             if width > column_width:
                 column_width = width
-
-        if not len(zettels):
-            click.secho('No results', fg='white')
-            return
 
         for zettel in zettels:
             click.echo(click.style(zettel.path.ljust(column_width, ' '), fg='green') + ' ' +
