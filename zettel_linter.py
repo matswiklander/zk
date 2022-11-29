@@ -17,7 +17,7 @@ class ZettelLinter:
             for zettel in all_zettels:
                 zettel_linter_rule().lint(zettel)
 
-        click.echo(self.__display_results(all_zettels, True))
+        self.__display_results(all_zettels, True)
 
     @staticmethod
     def __display_results(zettels, display_errors):
@@ -26,7 +26,6 @@ class ZettelLinter:
         zettels = [zettel for zettel in zettels if len(zettel.lint_errors)]
 
         if not len(zettels):
-            click.secho('No lint errors', fg='white')
             return
 
         for zettel in zettels:

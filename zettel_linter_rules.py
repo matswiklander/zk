@@ -27,7 +27,6 @@ class NoUnknownZettelLinterRule(BaseZettelLinterRule):
 
     def lint(self, zettel: BaseZettel):
         if type(zettel) == BaseZettel:
-            click.echo(self.__class__.__name__)
             zettel.lint_errors.append("No Unknown Zettel allowed. Check the tags.")
             return True
 
@@ -41,7 +40,6 @@ class NoZettelWithoutTitleLinterRule(BaseZettelLinterRule):
 
     def lint(self, zettel: BaseZettel):
         if len(zettel.title.strip()) == 0:
-            click.echo(self.__class__.__name__)
             zettel.lint_errors.append("No Zettel without title allowed.")
             return True
 
@@ -55,7 +53,6 @@ class NoZettelWithoutSummaryLinterRule(BaseZettelLinterRule):
 
     def lint(self, zettel: BaseZettel):
         if len(zettel.summary.strip()) == 0:
-            click.echo(self.__class__.__name__)
             zettel.lint_errors.append("No Zettel without summary allowed.")
             return True
 
@@ -69,7 +66,6 @@ class NoZettelWithoutBodyLinterRule(BaseZettelLinterRule):
 
     def lint(self, zettel: BaseZettel):
         if len(zettel.body.strip()) == 0:
-            click.echo(self.__class__.__name__)
             zettel.lint_errors.append("No Zettel without body allowed.")
             return True
 
