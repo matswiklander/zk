@@ -45,5 +45,32 @@ class NoZettelWithoutTitleLinterRule(BaseZettelLinterRule):
             zettel.lint_errors.append("No Zettel without title allowed.")
             return True
 
-        click.echo(zettel.title)
+        return False
+
+
+class NoZettelWithoutSummaryLinterRule(BaseZettelLinterRule):
+    def __init__(self):
+        super().__init__()
+        pass
+
+    def lint(self, zettel: BaseZettel):
+        if len(zettel.summary.strip()) == 0:
+            click.echo(self.__class__.__name__)
+            zettel.lint_errors.append("No Zettel without summary allowed.")
+            return True
+
+        return False
+
+
+class NoZettelWithoutBodyLinterRule(BaseZettelLinterRule):
+    def __init__(self):
+        super().__init__()
+        pass
+
+    def lint(self, zettel: BaseZettel):
+        if len(zettel.body.strip()) == 0:
+            click.echo(self.__class__.__name__)
+            zettel.lint_errors.append("No Zettel without body allowed.")
+            return True
+
         return False

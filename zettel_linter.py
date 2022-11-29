@@ -21,12 +21,12 @@ class ZettelLinter:
 
     @staticmethod
     def __display_results(zettels, display_errors):
-        click.clear()
-
         column_width = 0
 
+        zettels = [zettel for zettel in zettels if len(zettel.lint_errors)]
+
         if not len(zettels):
-            click.secho('No results', fg='white')
+            click.secho('No lint errors', fg='white')
             return
 
         for zettel in zettels:

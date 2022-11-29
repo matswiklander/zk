@@ -29,8 +29,6 @@ class ZettelSearchEngine:
 
     @staticmethod
     def __display_results(zettels, display_summary: bool):
-        click.clear()
-
         column_width = 0
 
         if not len(zettels):

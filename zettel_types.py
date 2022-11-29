@@ -2,8 +2,6 @@ import os
 import re
 from datetime import datetime
 
-import click
-
 
 def fetch_all_zettel_types():
     all_zettel_types = {zettel_class().snake_case(): zettel_class for zettel_class in BaseZettel.__subclasses__()}
@@ -47,10 +45,16 @@ class BaseZettel:
             self.title = ''
 
         # Extract summary
-        self.summary = re.search(r'---(.+?)---', self.raw, re.DOTALL | re.MULTILINE).group(1).strip()
+        try:
+            self.summary = re.search(r'---(.+?)---', self.raw, re.DOTALL | re.MULTILINE).group(1).strip()
+        except AttributeError:
+            self.summary = ''
 
         # Extract body
-        self.body = re.search(r'.*---(.+?)---', self.raw, re.DOTALL | re.MULTILINE).group(1).strip()
+        try:
+            self.body = re.search(r'.*---(.+?)---', self.raw, re.DOTALL | re.MULTILINE).group(1).strip()
+        except AttributeError:
+            self.body = ''
 
         all_zettel_types = fetch_all_zettel_types()
 
@@ -198,6 +202,26 @@ Body
 ---
 
 §reference
+'''
+
+    def __init__(self):
+        super().__init__()
+
+
+class TodoZettel(BaseZettel):
+    template = '''# Todo
+
+---
+
+Summary
+
+---
+
+Body
+
+---
+
+§todo
 '''
 
     def __init__(self):
