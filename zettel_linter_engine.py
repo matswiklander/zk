@@ -4,7 +4,7 @@ from zettel_repository import ZettelRepository
 from zettel_linter_rules import fetch_all_zettel_linter_rules
 
 
-class ZettelLinter:
+class ZettelLinterEngine:
     def __init__(self, zettel_repository: ZettelRepository):
         self.zettel_repository = zettel_repository
         pass

@@ -1,7 +1,8 @@
 import click
 
+from zettel_replacement_engine import ZettelReplacementEngine
 from zettel_repository import ZettelRepository
-from zettel_linter import ZettelLinter
+from zettel_linter_engine import ZettelLinterEngine
 from zettel_search_engine import ZettelSearchEngine
 
 
@@ -13,7 +14,8 @@ def cli():
 @cli.command()
 @click.argument('zettel_type', type=click.STRING)
 def add(zettel_type: str):
-    ZettelRepository().add(zettel_type)
+    zettel_replacement_engine = ZettelReplacementEngine()
+    ZettelRepository(zettel_replacement_engine).add(zettel_type)
 
 
 @cli.group()
@@ -45,7 +47,7 @@ def text(texts):
 def lint():
     zettel_repository = ZettelRepository()
 
-    zettel_linter = ZettelLinter(zettel_repository)
+    zettel_linter = ZettelLinterEngine(zettel_repository)
 
     zettel_linter.lint()
 

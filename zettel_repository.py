@@ -4,13 +4,15 @@ from os.path import exists
 
 import click
 
+from zettel_replacement_engine import ZettelReplacementEngine
 from zettel_types import BaseZettel
 
 
 class ZettelRepository:
-    def __init__(self):
+    def __init__(self, zettel_replacement_engine: ZettelReplacementEngine):
         self.all_zettels = self.__load()
         self.__initiate_templates()
+        self.zettel_replacement_engine = zettel_replacement_engine
 
     def add(self, zettel_type):
         zettel = self.__zettel_factory(zettel_type)

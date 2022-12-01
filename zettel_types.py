@@ -88,7 +88,7 @@ class BaseZettel:
 
 
 class JournalZettel(BaseZettel):
-    template = '''# Journal
+    template = '''# Journal {{today}}
 
 ---
 
