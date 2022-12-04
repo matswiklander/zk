@@ -1,7 +1,7 @@
 import os
 import re
 from os.path import exists
-
+from collections import Counter
 import click
 
 from zettel_replacement_engine import ZettelReplacementEngine
@@ -9,10 +9,9 @@ from zettel_types import BaseZettel
 
 
 class ZettelRepository:
-    def __init__(self, zettel_replacement_engine: ZettelReplacementEngine):
+    def __init__(self):
         self.all_zettels = self.__load()
         self.__initiate_templates()
-        self.zettel_replacement_engine = zettel_replacement_engine
 
     def add(self, zettel_type):
         zettel = self.__zettel_factory(zettel_type)
@@ -22,13 +21,18 @@ class ZettelRepository:
 
         if not self.__is_taken(zettel.id):
             zettel.create()
-            self.zettel_replacement_engine.apply(zettel)
+            ZettelReplacementEngine().apply(zettel)
             zettel.save()
             click.secho('{} A new {}-zettel has been created'.format(os.sep.join([zettel.snake_case(),
                                                                                   zettel.id + '.md']),
                                                                      zettel.snake_case()), fg='green')
         else:
             click.secho('You can only create one new zettel every minute.', fg='yellow')
+
+    def stats(self):
+        zettel_types = [zettel.snake_case() for zettel in self.all_zettels]
+        zettel_type_occurrences = Counter(zettel_types).items()
+        print(zettel_type_occurrences)
 
     def __load(self):
         all_zettels = []

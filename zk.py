@@ -14,8 +14,7 @@ def cli():
 @cli.command()
 @click.argument('zettel_type', type=click.STRING)
 def add(zettel_type: str):
-    zettel_replacement_engine = ZettelReplacementEngine()
-    ZettelRepository(zettel_replacement_engine).add(zettel_type)
+    ZettelRepository().add(zettel_type)
 
 
 @cli.group()
@@ -26,30 +25,23 @@ def search():
 @search.command()
 @click.argument('tags', nargs=-1)
 def tags(tags):
-    zettel_repository = ZettelRepository()
-
-    zettel_search_engine = ZettelSearchEngine(zettel_repository)
-
-    zettel_search_engine.search_tags(tags, True)
+    ZettelSearchEngine(ZettelRepository()).search_tags(tags, True)
 
 
 @search.command()
 @click.argument('texts', nargs=-1)
 def text(texts):
-    zettel_repository = ZettelRepository()
-
-    zettel_search_engine = ZettelSearchEngine(zettel_repository)
-
-    zettel_search_engine.search_text(texts, True)
+    ZettelSearchEngine(ZettelRepository()).search_text(texts, True)
 
 
 @cli.command()
 def lint():
-    zettel_repository = ZettelRepository()
+    ZettelLinterEngine(ZettelRepository()).lint()
 
-    zettel_linter = ZettelLinterEngine(zettel_repository)
 
-    zettel_linter.lint()
+@cli.command()
+def stats():
+    ZettelRepository().stats()
 
 
 if __name__ == '__main__':
