@@ -22,11 +22,13 @@ class BaseZettel:
         self.lint_errors = []
 
     def create(self):
+        self.raw = self.__fetch_template()
+
+    def save(self):
         os.makedirs(os.sep.join([os.getcwd(), self.snake_case()]), exist_ok=True)
 
         with open(os.sep.join([os.getcwd(), self.snake_case(), self.id + '.md']), 'w', encoding='utf-8') as out_fp:
-            template = self.__fetch_template()
-            out_fp.write(template)
+            out_fp.write(self.raw)
 
     def load(self, zettel_path: str):
         with open(zettel_path, 'r', encoding='utf-8') as fp:

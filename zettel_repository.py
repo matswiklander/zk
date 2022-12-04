@@ -22,6 +22,8 @@ class ZettelRepository:
 
         if not self.__is_taken(zettel.id):
             zettel.create()
+            self.zettel_replacement_engine.apply(zettel)
+            zettel.save()
             click.secho('{} A new {}-zettel has been created'.format(os.sep.join([zettel.snake_case(),
                                                                                   zettel.id + '.md']),
                                                                      zettel.snake_case()), fg='green')

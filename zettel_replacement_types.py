@@ -27,9 +27,4 @@ class TodayZettelReplacement(BaseZettelReplacement):
         super().__init__()
 
     def apply(self, zettel: BaseZettel):
-        click.echo(zettel.raw)
-        found = re.findall('.*today.*', zettel.raw)
-        click.echo('---')
-        click.echo(found)
-        click.echo('---')
         zettel.raw = re.sub(r'{{.*?' + self.snake_case() + r'.*?}}', date.today().isoformat(), zettel.raw)
