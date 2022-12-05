@@ -1,7 +1,8 @@
 import os
 import re
-from os.path import exists
 from collections import Counter
+from os.path import exists
+
 import click
 
 from zettel_replacement_engine import ZettelReplacementEngine
@@ -30,9 +31,22 @@ class ZettelRepository:
             click.secho('You can only create one new zettel every minute.', fg='yellow')
 
     def stats(self):
+        column_width = 0
+
         zettel_types = [zettel.snake_case() for zettel in self.all_zettels]
-        zettel_type_occurrences = Counter(zettel_types).items()
-        print(zettel_type_occurrences)
+        zettel_type_occurrences = list(Counter(zettel_types).items())
+
+        if not len(zettel_type_occurrences):
+            return
+
+        for zettel_type_occurrence in zettel_type_occurrences:
+            width = len(zettel_type_occurrence[0])
+            if width > column_width:
+                column_width = width
+
+        for zettel_type_occurrence in zettel_type_occurrences:
+            click.echo(click.style(zettel_type_occurrence[0].ljust(column_width, ' '), fg='green') + ' ' +
+                       click.style(zettel_type_occurrence[1], fg='white'))
 
     def __load(self):
         all_zettels = []

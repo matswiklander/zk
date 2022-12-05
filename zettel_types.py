@@ -79,7 +79,7 @@ class BaseZettel:
         return datetime.now().strftime('%Y%m%d%H%M')
 
     def __extract_all_tags(self):
-        return [x.lower() for x in list(dict.fromkeys(re.findall(r'§(\w+)', self.raw)))]
+        return [x.lower() for x in list(dict.fromkeys(re.findall(r'§([\w-]+)', self.raw)))]
 
     def __fetch_template(self):
         with open(os.sep.join([os.getcwd(), 'templates', self.snake_case() + '.md']), 'r',

@@ -32,7 +32,6 @@ class ZettelSearchEngine:
         column_width = 0
 
         if not len(zettels):
-            click.secho('No results', fg='white')
             return
 
         for zettel in zettels:
