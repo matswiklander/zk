@@ -2,7 +2,7 @@ import re
 
 import click
 
-from zettel_types import BaseZettel
+from zettel_types import BaseZettel, fetch_all_zettel_types
 
 
 def fetch_all_zettel_linter_rules():
@@ -23,7 +23,6 @@ class BaseZettelLinterRule:
 class NoUnknownZettelLinterRule(BaseZettelLinterRule):
     def __init__(self):
         super().__init__()
-        pass
 
     def lint(self, zettel: BaseZettel):
         if type(zettel) == BaseZettel:
@@ -36,7 +35,6 @@ class NoUnknownZettelLinterRule(BaseZettelLinterRule):
 class NoZettelWithoutTitleLinterRule(BaseZettelLinterRule):
     def __init__(self):
         super().__init__()
-        pass
 
     def lint(self, zettel: BaseZettel):
         if len(zettel.title.strip()) == 0:
@@ -49,7 +47,6 @@ class NoZettelWithoutTitleLinterRule(BaseZettelLinterRule):
 class NoZettelWithoutSummaryLinterRule(BaseZettelLinterRule):
     def __init__(self):
         super().__init__()
-        pass
 
     def lint(self, zettel: BaseZettel):
         if len(zettel.summary.strip()) == 0:
@@ -62,11 +59,26 @@ class NoZettelWithoutSummaryLinterRule(BaseZettelLinterRule):
 class NoZettelWithoutBodyLinterRule(BaseZettelLinterRule):
     def __init__(self):
         super().__init__()
-        pass
 
     def lint(self, zettel: BaseZettel):
         if len(zettel.body.strip()) == 0:
             zettel.lint_errors.append("No Zettel without body allowed.")
+            return True
+
+        return False
+
+
+class NoAmbiguousZettelLinterRule(BaseZettelLinterRule):
+    def __init__(self):
+        super().__init__()
+
+    def lint(self, zettel: BaseZettel):
+        all_zettel_types = fetch_all_zettel_types()
+
+        found_zettel_types = [tag for tag in zettel.tags if tag in all_zettel_types]
+
+        if len(found_zettel_types) > 1:
+            zettel.lint_errors.append("No Zettel with ambiguous type allowed.")
             return True
 
         return False
