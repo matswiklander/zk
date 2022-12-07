@@ -13,8 +13,14 @@ class ZettelSearchEngine:
     def search_tags(self, tags, display_summary: bool):
         filtered_zettels = self.zettel_repository.all_zettels
 
-        for tag in tags:
+        and_tags = [tag for tag in tags if not tag.startswith('/')]
+        not_tags = [tag[1:] for tag in tags if tag.startswith('/')]
+
+        for tag in and_tags:
             filtered_zettels = [zettel for zettel in filtered_zettels if tag in zettel.tags]
+
+        for tag in not_tags:
+            filtered_zettels = [zettel for zettel in filtered_zettels if tag not in zettel.tags]
 
         self.__display_results(filtered_zettels, display_summary)
 
