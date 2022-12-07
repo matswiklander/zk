@@ -1,7 +1,5 @@
 import re
 
-import click
-
 from zettel_types import BaseZettel, fetch_all_zettel_types
 
 

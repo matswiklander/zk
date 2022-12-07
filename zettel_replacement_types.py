@@ -1,8 +1,6 @@
 import re
 from datetime import date
 
-import click
-
 from zettel_types import BaseZettel
 
 

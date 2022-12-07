@@ -1,5 +1,3 @@
-import click
-
 from zettel_replacement_types import fetch_all_zettel_replacement_types
 from zettel_types import BaseZettel
 

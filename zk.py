@@ -1,8 +1,7 @@
 import click
 
-from zettel_replacement_engine import ZettelReplacementEngine
-from zettel_repository import ZettelRepository
 from zettel_linter_engine import ZettelLinterEngine
+from zettel_repository import ZettelRepository
 from zettel_search_engine import ZettelSearchEngine
 
 
