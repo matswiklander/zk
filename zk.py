@@ -24,14 +24,16 @@ def search():
 
 @search.command()
 @click.argument('tags', nargs=-1)
-def tags(tags):
-    ZettelSearchEngine(ZettelRepository()).search_tags(tags, True)
+@click.option("--summary", is_flag=True, show_default=True, default=False, help="Show summary of zettel")
+def tags(tags, summary):
+    ZettelSearchEngine(ZettelRepository()).search_tags(tags, summary)
 
 
 @search.command()
 @click.argument('texts', nargs=-1)
-def text(texts):
-    ZettelSearchEngine(ZettelRepository()).search_text(texts, True)
+@click.option("--summary", is_flag=True, show_default=True, default=False, help="Show summary of zettel")
+def text(texts, summary):
+    ZettelSearchEngine(ZettelRepository()).search_text(texts, summary)
 
 
 @cli.command()
