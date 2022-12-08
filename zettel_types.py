@@ -25,9 +25,11 @@ class BaseZettel:
         self.raw = self.__fetch_template()
 
     def save(self):
-        os.makedirs(os.sep.join([os.getcwd(), self.snake_case()]), exist_ok=True)
+        zettel_path = os.sep.join([os.getcwd(), self.snake_case(), self.id[0:4], self.id[4:6]])
 
-        with open(os.sep.join([os.getcwd(), self.snake_case(), self.id + '.md']), 'w', encoding='utf-8') as out_fp:
+        os.makedirs(zettel_path, exist_ok=True)
+
+        with open(os.sep.join([zettel_path, self.id + '.md']), 'w', encoding='utf-8') as out_fp:
             out_fp.write(self.raw)
 
     def load(self, zettel_path: str):

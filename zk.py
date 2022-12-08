@@ -5,6 +5,17 @@ from zettel_repository import ZettelRepository
 from zettel_search_engine import ZettelSearchEngine
 
 
+def print_banner():
+    banner = """               __    __         .__   __                     __                 
+________ _____/  |__/  |_  ____ |  | |  | _______    _______/  |_  ____   ____  
+\\___   // __ \\   __\\   __\\/ __ \\|  | |  |/ /\\__  \\  /  ___/\\   __\\/ __ \\ /    \\  v1.0
+ /    /\\  ___/|  |  |  | \\  ___/|  |_|    <  / __ \\_\\___ \\  |  | \\  ___/|   |  \\
+/_____ \\\\___  >__|  |__|  \\___  >____/__|_ \\(____  /____  > |__|  \\___  >___|  /
+      \\/    \\/                \\/          \\/     \\/     \\/            \\/     \\/ """
+
+    click.secho(banner, fg='cyan')
+
+
 @click.group()
 def cli():
     pass
@@ -46,4 +57,5 @@ def stats():
 
 
 if __name__ == '__main__':
+    print_banner()
     cli()
