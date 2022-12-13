@@ -51,9 +51,19 @@ def lint():
     ZettelLinterEngine(ZettelRepository()).lint()
 
 
-@cli.command()
+@cli.group()
 def stats():
-    ZettelRepository().stats()
+    pass
+
+
+@stats.command()
+def zettels():
+    ZettelRepository().stats_zettels()
+
+
+@stats.command()
+def tags():
+    ZettelRepository().stats_tags()
 
 
 if __name__ == '__main__':

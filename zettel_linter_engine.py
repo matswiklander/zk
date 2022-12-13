@@ -15,7 +15,7 @@ class ZettelLinterEngine:
 
         for zettel_linter_rule in all_zettel_linter_rules.values():
             for zettel in all_zettels:
-                zettel_linter_rule().lint(zettel)
+                zettel_linter_rule().lint(zettel, self.zettel_repository)
 
         self.__display_results(all_zettels, True)
 

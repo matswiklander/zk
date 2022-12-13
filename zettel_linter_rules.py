@@ -1,5 +1,6 @@
 import re
 
+from zettel_repository import ZettelRepository
 from zettel_types import BaseZettel, fetch_all_zettel_types
 
 
@@ -22,9 +23,10 @@ class NoUnknownZettelLinterRule(BaseZettelLinterRule):
     def __init__(self):
         super().__init__()
 
-    def lint(self, zettel: BaseZettel):
+    @staticmethod
+    def lint(zettel: BaseZettel, zettel_repository: ZettelRepository):
         if type(zettel) == BaseZettel:
-            zettel.lint_errors.append("No Unknown Zettel allowed. Check the tags.")
+            zettel.lint_errors.append("No Zettel with unknown type allowed.")
             return True
 
         return False
@@ -34,7 +36,8 @@ class NoZettelWithoutTitleLinterRule(BaseZettelLinterRule):
     def __init__(self):
         super().__init__()
 
-    def lint(self, zettel: BaseZettel):
+    @staticmethod
+    def lint(zettel: BaseZettel, zettel_repository: ZettelRepository):
         if len(zettel.title.strip()) == 0:
             zettel.lint_errors.append("No Zettel without title allowed.")
             return True
@@ -46,7 +49,8 @@ class NoZettelWithoutSummaryLinterRule(BaseZettelLinterRule):
     def __init__(self):
         super().__init__()
 
-    def lint(self, zettel: BaseZettel):
+    @staticmethod
+    def lint(zettel: BaseZettel, zettel_repository: ZettelRepository):
         if len(zettel.summary.strip()) == 0:
             zettel.lint_errors.append("No Zettel without summary allowed.")
             return True
@@ -58,7 +62,8 @@ class NoZettelWithoutBodyLinterRule(BaseZettelLinterRule):
     def __init__(self):
         super().__init__()
 
-    def lint(self, zettel: BaseZettel):
+    @staticmethod
+    def lint(zettel: BaseZettel, zettel_repository: ZettelRepository):
         if len(zettel.body.strip()) == 0:
             zettel.lint_errors.append("No Zettel without body allowed.")
             return True
@@ -70,7 +75,8 @@ class NoAmbiguousZettelLinterRule(BaseZettelLinterRule):
     def __init__(self):
         super().__init__()
 
-    def lint(self, zettel: BaseZettel):
+    @staticmethod
+    def lint(zettel: BaseZettel, zettel_repository: ZettelRepository):
         all_zettel_types = fetch_all_zettel_types()
 
         found_zettel_types = [tag for tag in zettel.tags if tag in all_zettel_types]
@@ -80,3 +86,14 @@ class NoAmbiguousZettelLinterRule(BaseZettelLinterRule):
             return True
 
         return False
+
+# class NoBrokenLinksInZettelLinterRule(BaseZettelLinterRule):
+#     def __init__(self):
+#         super().__init__()
+#
+#     @staticmethod
+#     def lint(zettel: BaseZettel, zettel_repository: ZettelRepository):
+#         # sök reda på alla länkar i råtexten
+#
+#         zettel.lint_errors.append("No Zettel with broken links allowed.")
+#         return True

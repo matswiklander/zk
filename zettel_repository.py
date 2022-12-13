@@ -24,13 +24,13 @@ class ZettelRepository:
             zettel.create()
             ZettelReplacementEngine().apply(zettel)
             zettel.save()
-            click.secho('{} A new {}-zettel has been created'.format(os.sep.join([zettel.snake_case(),
-                                                                                  zettel.id + '.md']),
-                                                                     zettel.snake_case()), fg='green')
+
+            click.echo(click.style('{}'.format(os.sep.join([zettel.path, zettel.id + '.md'])), fg='green') + ' ' +
+                       click.style('A new {}-zettel has been created'.format(zettel.snake_case()), fg='white'))
         else:
             click.secho('You can only create one new zettel every minute.', fg='yellow')
 
-    def stats(self):
+    def stats_zettels(self):
         column_width = 0
 
         zettel_types = [zettel.snake_case() for zettel in self.all_zettels]
@@ -47,6 +47,25 @@ class ZettelRepository:
         for zettel_type_occurrence in zettel_type_occurrences:
             click.echo(click.style(zettel_type_occurrence[0].ljust(column_width, ' '), fg='green') + ' ' +
                        click.style(zettel_type_occurrence[1], fg='white'))
+
+    def stats_tags(self):
+        column_width = 0
+
+        all_zettel_tags = [tag for tags in [zettel.tags for zettel in self.all_zettels] for tag in tags]
+
+        zettel_tag_occurrences = list(Counter(all_zettel_tags).items())
+
+        if not len(zettel_tag_occurrences):
+            return
+
+        for zettel_tag_occurrence in zettel_tag_occurrences:
+            width = len(zettel_tag_occurrence[0])
+            if width > column_width:
+                column_width = width
+
+        for zettel_tag_occurrence in zettel_tag_occurrences:
+            click.echo(click.style(zettel_tag_occurrence[0].ljust(column_width, ' '), fg='green') + ' ' +
+                       click.style(zettel_tag_occurrence[1], fg='white'))
 
     def __load(self):
         all_zettels = []
