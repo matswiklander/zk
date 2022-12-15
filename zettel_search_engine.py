@@ -1,3 +1,4 @@
+import os
 import textwrap
 
 import click
@@ -11,7 +12,7 @@ class ZettelSearchEngine:
         pass
 
     def search_tags(self, tags, display_summary: bool):
-        filtered_zettels = self.zettel_repository.all_zettels
+        filtered_zettels = self.zettel_repository.all_zettels_list
 
         and_tags = [tag for tag in tags if not tag.startswith('/')]
         not_tags = [tag[1:] for tag in tags if tag.startswith('/')]
@@ -25,7 +26,7 @@ class ZettelSearchEngine:
         self.__display_results(filtered_zettels, display_summary)
 
     def search_text(self, texts, display_summary: bool):
-        filtered_zettels = self.zettel_repository.all_zettels
+        filtered_zettels = self.zettel_repository.all_zettels_list
 
         for text in texts:
             filtered_zettels = [zettel for zettel in filtered_zettels if
@@ -46,7 +47,7 @@ class ZettelSearchEngine:
                 column_width = width
 
         for zettel in zettels:
-            click.echo(click.style(zettel.path.ljust(column_width, ' '), fg='green') + ' ' +
+            click.echo(click.style(zettel.path.replace(os.sep, '/').ljust(column_width, ' '), fg='green') + ' ' +
                        click.style(zettel.title, fg='white'))
 
             if display_summary:

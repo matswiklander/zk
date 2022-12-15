@@ -43,6 +43,14 @@ class BaseZettel:
 
         self.path = self.path[1:len(self.path)]
 
+        # Extract id
+        id = re.findall(r'.+?(\d{12})\.md', zettel_path)
+
+        if len(id) != 0:
+            self.id = id[0].strip()
+        else:
+            self.id = self.__create_id()
+
         # Extract title
         title = re.findall(r'# (.+)', self.raw)
 

@@ -1,3 +1,4 @@
+import os
 import re
 
 from zettel_repository import ZettelRepository
@@ -87,13 +88,32 @@ class NoAmbiguousZettelLinterRule(BaseZettelLinterRule):
 
         return False
 
-# class NoBrokenLinksInZettelLinterRule(BaseZettelLinterRule):
-#     def __init__(self):
-#         super().__init__()
-#
-#     @staticmethod
-#     def lint(zettel: BaseZettel, zettel_repository: ZettelRepository):
-#         # sök reda på alla länkar i råtexten
-#
-#         zettel.lint_errors.append("No Zettel with broken links allowed.")
-#         return True
+
+class NoBrokenLinksInZettelLinterRule(BaseZettelLinterRule):
+    def __init__(self):
+        super().__init__()
+
+    @staticmethod
+    def lint(zettel: BaseZettel, zettel_repository: ZettelRepository):
+        all_links = re.findall(r'\[(.+?)\]\((.+?)\)', zettel.raw, re.DOTALL | re.MULTILINE)
+
+        if len(all_links) == 0:
+            return False
+
+        for link in all_links:
+            zettel_id = re.findall(r'.+?(\d{12})\.md', link[1])
+
+            if len(zettel_id) != 0:
+                try:
+                    linked_zettel = zettel_repository.all_zettels_dict[zettel_id[0]]
+
+                    if not linked_zettel.path.replace(os.sep, '/') in link[1]:
+                        zettel.lint_errors.append('    ' + link[1] + ' => /' + linked_zettel.path.replace(os.sep, '/'))
+
+                except KeyError:
+                    zettel.lint_errors.append('    ' + link[1] + ' => Missing')
+
+        if len(zettel.lint_errors):
+            zettel.lint_errors.insert(0, "No Zettel with broken internal links allowed.")
+
+        return False

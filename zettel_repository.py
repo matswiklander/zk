@@ -11,7 +11,7 @@ from zettel_types import BaseZettel
 
 class ZettelRepository:
     def __init__(self):
-        self.all_zettels = self.__load()
+        self.all_zettels_list, self.all_zettels_dict = self.__load()
         self.__initiate_templates()
 
     def add(self, zettel_type):
@@ -33,7 +33,7 @@ class ZettelRepository:
     def stats_zettels(self):
         column_width = 0
 
-        zettel_types = [zettel.snake_case() for zettel in self.all_zettels]
+        zettel_types = [zettel.snake_case() for zettel in self.all_zettels_list]
         zettel_type_occurrences = list(Counter(zettel_types).items())
 
         if not len(zettel_type_occurrences):
@@ -51,7 +51,7 @@ class ZettelRepository:
     def stats_tags(self):
         column_width = 0
 
-        all_zettel_tags = [tag for tags in [zettel.tags for zettel in self.all_zettels] for tag in tags]
+        all_zettel_tags = [tag for tags in [zettel.tags for zettel in self.all_zettels_list] for tag in tags]
 
         zettel_tag_occurrences = list(Counter(all_zettel_tags).items())
 
@@ -68,13 +68,16 @@ class ZettelRepository:
                        click.style(zettel_tag_occurrence[1], fg='white'))
 
     def __load(self):
-        all_zettels = []
+        all_zettels_list = []
+        all_zettels_dict = {}
         all_zettel_paths = self.__fetch_all_zettel_file_paths()
 
         for zettel_path in all_zettel_paths:
-            all_zettels.append(BaseZettel().load(zettel_path))
+            zettel = BaseZettel().load(zettel_path)
+            all_zettels_list.append(zettel)
+            all_zettels_dict[zettel.id] = zettel
 
-        return all_zettels
+        return all_zettels_list, all_zettels_dict
 
     @staticmethod
     def __zettel_factory(zettel_type):
