@@ -3,6 +3,7 @@ import click
 from zettel_linter_engine import ZettelLinterEngine
 from zettel_repository import ZettelRepository
 from zettel_search_engine import ZettelSearchEngine
+from zettel_fix_engine import ZettelFixEngine
 
 
 def print_banner():
@@ -44,6 +45,11 @@ def tags(tags, summary):
 @click.option("--summary", is_flag=True, show_default=True, default=False, help="Show summary of zettel")
 def text(texts, summary):
     ZettelSearchEngine(ZettelRepository()).search_text(texts, summary)
+
+
+@cli.command()
+def fix():
+    ZettelFixEngine(ZettelRepository()).fix()
 
 
 @cli.command()
