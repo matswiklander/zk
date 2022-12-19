@@ -34,7 +34,7 @@ class ZettelRepository:
         column_width = 0
 
         zettel_types = [zettel.snake_case() for zettel in self.all_zettels_list]
-        zettel_type_occurrences = list(Counter(zettel_types).items())
+        zettel_type_occurrences = sorted(list(Counter(zettel_types).items()), key=lambda tup: tup[0])
 
         if not len(zettel_type_occurrences):
             return
