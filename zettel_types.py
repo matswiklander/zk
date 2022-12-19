@@ -32,7 +32,8 @@ class BaseZettel:
 
         os.makedirs(full_zettel_path, exist_ok=True)
 
-        with open(os.sep.join([full_zettel_path, self.id + '.md']), 'w', encoding='utf-8') as out_fp:
+        with open(os.sep.join([full_zettel_path, self.id + '.md']), 'w', encoding='utf-8', newline='\n') as out_fp:
+            self.raw = '\n'.join(self.raw.splitlines()) + '\n'
             out_fp.write(self.raw)
 
     def load(self, zettel_path: str):

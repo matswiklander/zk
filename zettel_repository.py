@@ -6,7 +6,7 @@ from os.path import exists
 import click
 
 from zettel_replacement_engine import ZettelReplacementEngine
-from zettel_types import BaseZettel
+from zettel_types import BaseZettel, fetch_all_zettel_types
 
 
 class ZettelRepository:
@@ -53,7 +53,11 @@ class ZettelRepository:
 
         all_zettel_tags = [tag for tags in [zettel.tags for zettel in self.all_zettels_list] for tag in tags]
 
-        zettel_tag_occurrences = list(Counter(all_zettel_tags).items())
+        all_zettel_types = list(fetch_all_zettel_types().keys())
+
+        all_zettel_tags = [tag for tag in all_zettel_tags if tag not in all_zettel_types]
+
+        zettel_tag_occurrences = sorted(list(Counter(all_zettel_tags).items()), key=lambda tup: tup[1], reverse=True)
 
         if not len(zettel_tag_occurrences):
             return
