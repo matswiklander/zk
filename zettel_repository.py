@@ -25,7 +25,7 @@ class ZettelRepository:
             ZettelReplacementEngine().apply(zettel)
             zettel.save()
 
-            click.echo(click.style('{}'.format(os.sep.join([zettel.path, zettel.id + '.md'])), fg='green') + ' ' +
+            click.echo(click.style('{}'.format(zettel.path), fg='green') + ' ' +
                        click.style('A new {}-zettel has been created'.format(zettel.snake_case()), fg='white'))
         else:
             click.secho('You can only create one new zettel every minute.', fg='yellow')
