@@ -2,6 +2,8 @@ import os
 import re
 from datetime import datetime
 
+import click
+
 
 def fetch_all_zettel_types():
     all_zettel_types = {zettel_class().snake_case(): zettel_class for zettel_class in BaseZettel.__subclasses__()}
@@ -19,6 +21,7 @@ class BaseZettel:
         self.body = ''
         self.path = ''
         self.tags = []
+        self.links = []
         self.lint_errors = []
 
     def create(self):
@@ -44,38 +47,17 @@ class BaseZettel:
 
         self.path = self.path[1:len(self.path)]
 
-        # Extract id
-        id = re.findall(r'.+?(\d{12})\.md', zettel_path)
-
-        if len(id) != 0:
-            self.id = id[0].strip()
-        else:
-            self.id = self.__create_id()
-
-        # Extract title
-        title = re.findall(r'# (.+)', self.raw)
-
-        if len(title) != 0:
-            self.title = title[0].strip()
-        else:
-            self.title = ''
-
-        # Extract summary
-        try:
-            self.summary = re.search(r'---(.+?)---', self.raw, re.DOTALL | re.MULTILINE).group(1).strip()
-        except AttributeError:
-            self.summary = ''
-
-        # Extract body
-        try:
-            self.body = re.search(r'.*---(.+?)---', self.raw, re.DOTALL | re.MULTILINE).group(1).strip()
-        except AttributeError:
-            self.body = ''
+        self.__extract_id(zettel_path)
+        self.__extract_title()
+        self.__extract_summary()
+        self.__extract_body()
 
         all_zettel_types = fetch_all_zettel_types()
 
         self.tags = self.__extract_all_tags()
+        self.__extract_all_links()
 
+        # Cast self to correct type based on tag
         for tag in self.tags:
             if tag in all_zettel_types:
                 self.__class__ = all_zettel_types[tag]
@@ -83,6 +65,36 @@ class BaseZettel:
 
         self.__class__ = BaseZettel
         return self
+
+    def __extract_body(self):
+        # Extract body
+        try:
+            self.body = re.search(r'.*---(.+?)---', self.raw, re.DOTALL | re.MULTILINE).group(1).strip()
+        except AttributeError:
+            self.body = ''
+
+    def __extract_summary(self):
+        # Extract summary
+        try:
+            self.summary = re.search(r'---(.+?)---', self.raw, re.DOTALL | re.MULTILINE).group(1).strip()
+        except AttributeError:
+            self.summary = ''
+
+    def __extract_title(self):
+        # Extract title
+        title = re.findall(r'# (.+)', self.raw)
+        if len(title) != 0:
+            self.title = title[0].strip()
+        else:
+            self.title = ''
+
+    def __extract_id(self, zettel_path):
+        # Extract id
+        id = re.findall(r'.+?(\d{12})\.md', zettel_path)
+        if len(id) != 0:
+            self.id = id[0].strip()
+        else:
+            self.id = self.__create_id()
 
     def snake_case(self):
         name = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', self.__class__.__name__[0:-6])
@@ -94,6 +106,18 @@ class BaseZettel:
 
     def __extract_all_tags(self):
         return [x.lower() for x in list(dict.fromkeys(re.findall(r'§([\w-]+)', self.raw)))]
+
+    def __extract_all_links(self):
+        all_links = re.findall(r'\[(.+?)\]\((.+?)\)', self.raw, re.DOTALL | re.MULTILINE)
+
+        if len(all_links) == 0:
+            return True
+
+        for link in all_links:
+            zettel_id = re.findall(r'.+?(\d{12})\.md', link[1])
+
+            if len(zettel_id):
+                self.links.append(zettel_id[0])
 
     def __fetch_template(self):
         with open(os.sep.join([os.getcwd(), 'templates', self.snake_case() + '.md']), 'r',

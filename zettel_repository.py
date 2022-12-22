@@ -1,5 +1,6 @@
 import os
 import re
+import textwrap
 from collections import Counter
 from os.path import exists
 
@@ -25,8 +26,8 @@ class ZettelRepository:
             ZettelReplacementEngine().apply(zettel)
             zettel.save()
 
-            click.echo(click.style('{}'.format(zettel.path + os.sep + zettel.id + '.md'), fg='green') + ' ' +
-                       click.style('A new {}-zettel has been created'.format(zettel.snake_case()), fg='white'))
+            click.echo(click.style(f'{zettel.path + os.sep + zettel.id + ".md"}', fg='green') + ' ' +
+                       click.style(f'A new {zettel.snake_case()}-zettel has been created', fg='white'))
         else:
             click.secho('You can only create one new zettel every minute.', fg='yellow')
 
@@ -70,6 +71,67 @@ class ZettelRepository:
         for zettel_tag_occurrence in zettel_tag_occurrences:
             click.echo(click.style(zettel_tag_occurrence[0].ljust(column_width, ' '), fg='green') + ' ' +
                        click.style(zettel_tag_occurrence[1], fg='white'))
+
+    def generate_tags_cloud(self):
+        template = """# Tags Cloud
+
+```mermaid
+{{tag_cloud}}
+```
+        """
+
+        tag_cloud = "graph TB\n"
+
+        all_zettel_types = fetch_all_zettel_types()
+
+        for zettel in self.all_zettels_list:
+            for tag in zettel.tags:
+                title = self.__wrap_cloud_title(zettel)
+
+                if tag not in all_zettel_types:
+                    tag_cloud += f'    {zettel.id}({title}) --> {tag}(({tag}))\n'
+
+        template = template.replace('{{tag_cloud}}', tag_cloud)
+
+        with open(os.getcwd() + os.sep + 'tag-cloud.md', 'w', encoding='utf-8', newline='\n') as tag_cloud_fp:
+            tag_cloud_fp.write(template)
+
+    @staticmethod
+    def __wrap_cloud_title(zettel):
+        return '"' + '\\n'.join(textwrap.wrap(zettel.title, 20)) + '"'
+
+    def generate_zettel_cloud(self):
+        template = """# Zettel Cloud
+
+```mermaid
+{{zettel_cloud}}
+```
+"""
+
+        link_rows = {}
+
+        zettel_cloud = "graph TB\n"
+
+        for from_zettel in self.all_zettels_list:
+            if len(from_zettel.links):
+                from_title = self.__wrap_cloud_title(from_zettel)
+
+                for link in from_zettel.links:
+                    to_zettel = self.all_zettels_dict[link]
+                    to_title = self.__wrap_cloud_title(to_zettel)
+
+                    link_rows[
+                        from_zettel.id + to_zettel.id] = f'    {from_zettel.id}({from_title}) --> {to_zettel.id}({to_title})\n'
+
+        link_rows = list(link_rows.items())
+
+        for link_row in link_rows:
+            zettel_cloud += link_row[1]
+
+        template = template.replace('{{zettel_cloud}}', zettel_cloud)
+
+        with open(os.getcwd() + os.sep + 'zettel-cloud.md', 'w', encoding='utf-8', newline='\n') as zettel_cloud_fp:
+            zettel_cloud_fp.write(template)
 
     def __load(self):
         all_zettels_list = []
