@@ -7,14 +7,20 @@ from zettel_fix_engine import ZettelFixEngine
 
 
 def print_banner():
-    banner = """               __    __         .__   __                     __
+    banner = r"""               __    __         .__   __                     __
 ________ _____/  |__/  |_  ____ |  | |  | _______    _______/  |_  ____   ____
-\\___   // __ \\   __\\   __\\/ __ \\|  | |  |/ /\\__  \\  /  ___/\\   __\\/ __ \\ /    \\  v1.0
- /    /\\  ___/|  |  |  | \\  ___/|  |_|    <  / __ \\_\\___ \\  |  | \\  ___/|   |  \\
-/_____ \\\\___  >__|  |__|  \\___  >____/__|_ \\(____  /____  > |__|  \\___  >___|  /
-      \\/    \\/                \\/          \\/     \\/     \\/            \\/     \\/ """
+\___   // __ \   __\   __\/ __ \|  | |  |/ /\__  \  /  ___/\   __\/ __ \ /    \  v1.0
+ /    /\  ___/|  |  |  | \  ___/|  |_|    <  / __ \_\___ \  |  | \  ___/|   |  \
+/_____ \\___  >__|  |__|  \___  >____/__|_ \(____  /____  > |__|  \___  >___|  /
+      \/    \/                \/          \/     \/     \/            \/     \/"""
 
-    click.secho(banner, fg='cyan')
+    banner = banner.splitlines()
+
+    for index, row in enumerate(banner):
+        if index % 2:
+            click.secho(banner[index], fg='yellow', bold=True)
+        else:
+            click.secho(banner[index], fg='blue', bold=True)
 
 
 @click.group()
@@ -70,21 +76,6 @@ def zettels():
 @stats.command()
 def tags():
     ZettelRepository().stats_tags()
-
-
-@cli.group()
-def generate():
-    pass
-
-
-@generate.command()
-def zettel_cloud():
-    ZettelRepository().generate_zettel_cloud()
-
-
-@generate.command()
-def tags_cloud():
-    ZettelRepository().generate_tags_cloud()
 
 
 if __name__ == '__main__':
