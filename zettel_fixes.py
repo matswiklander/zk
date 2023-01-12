@@ -34,7 +34,6 @@ class LinkTitleZettelFix(BaseZettelFix):
             return True
 
         for link in all_links:
-            click.echo(link)
             zettel_id = re.findall(r'.+?(\d{12})\.md', link[1])
 
             if len(zettel_id) and len(zettel_id[0]):
