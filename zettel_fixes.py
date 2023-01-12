@@ -33,14 +33,15 @@ class LinkTitleZettelFix(BaseZettelFix):
         if len(all_links) == 0:
             return True
 
-        for link in zettel.links:
+        for link in all_links:
+            click.echo(link)
             zettel_id = re.findall(r'.+?(\d{12})\.md', link[1])
 
-            if len(zettel_id) != 0:
+            if len(zettel_id) and len(zettel_id[0]):
                 try:
                     linked_zettel = zettel_repository.all_zettels_dict[zettel_id[0]]
 
-                    zettel.raw = zettel.raw.replace(f'[{link[0]}]({link[1]})' f'[{linked_zettel.title}]({link[1]})')
+                    zettel.raw = zettel.raw.replace(f'[{link[0]}]({link[1]})', f'[{linked_zettel.title}]({link[1]})')
 
                     zettel.save()
 

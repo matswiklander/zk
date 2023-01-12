@@ -97,8 +97,8 @@ class BaseZettel:
             self.id = self.__create_id()
 
     def snake_case(self):
-        name = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', self.__class__.__name__[0:-6])
-        return re.sub('([a-z0-9])([A-Z])', r'\1_\2', name).lower()
+        name = re.sub(r'(.)([A-Z][a-z]+)', r'\1_\2', self.__class__.__name__[0:-6])
+        return re.sub(r'([a-z0-9])([A-Z])', r'\1_\2', name).lower()
 
     @staticmethod
     def __create_id():
