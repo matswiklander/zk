@@ -28,9 +28,7 @@ def cli():
     pass
 
 
-Remo @ cli.command()
-
-
+@cli.command()
 def fix():
     ZettelFixEngine(ZettelRepository()).fix()
 
