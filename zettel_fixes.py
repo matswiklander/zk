@@ -1,10 +1,8 @@
 import os
 import re
 
-import click
-
 from zettel_repository import ZettelRepository
-from zettel_types import BaseZettel, fetch_all_zettel_types
+from zettel_types import BaseZettel
 
 
 def fetch_all_zettel_fixes():

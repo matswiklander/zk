@@ -72,15 +72,6 @@ class ZettelRepository:
             click.echo(click.style(zettel_tag_occurrence[0].ljust(column_width, ' '), fg='green') + ' ' +
                        click.style(zettel_tag_occurrence[1], fg='white'))
 
-    def expand(self, zettel_id: str):
-        zettel = self.all_zettels_dict[zettel_id]
-
-        for link in zettel.links:
-            zettel.raw = re.sub(f'\\[.*\\]\\(.*{link}.md\\)', self.all_zettels_dict[link].body, zettel.raw)
-
-        click.echo(zettel.raw)
-        pass
-
     def __load(self):
         all_zettels_list = []
         all_zettels_dict = {}

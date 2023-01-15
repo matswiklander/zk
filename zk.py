@@ -28,13 +28,9 @@ def cli():
     pass
 
 
-@cli.command()
-@click.argument('zettel_id', type=click.STRING)
-def expand(zettel_id: str):
-    ZettelRepository().expand(zettel_id)
+Remo @ cli.command()
 
 
-@cli.command()
 def fix():
     ZettelFixEngine(ZettelRepository()).fix()
 
