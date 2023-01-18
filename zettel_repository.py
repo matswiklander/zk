@@ -1,3 +1,4 @@
+import math
 import os
 import re
 import textwrap
@@ -32,26 +33,15 @@ class ZettelRepository:
             click.secho('You can only create one new zettel every minute.', fg='yellow')
 
     def stats_zettels(self):
-        column_width = 0
-
         zettel_types = [zettel.snake_case() for zettel in self.all_zettels_list]
         zettel_type_occurrences = sorted(list(Counter(zettel_types).items()), key=lambda tup: tup[0])
 
         if not len(zettel_type_occurrences):
             return
 
-        for zettel_type_occurrence in zettel_type_occurrences:
-            width = len(zettel_type_occurrence[0])
-            if width > column_width:
-                column_width = width
-
-        for zettel_type_occurrence in zettel_type_occurrences:
-            click.echo(click.style(zettel_type_occurrence[0].ljust(column_width, ' '), fg='green') + ' ' +
-                       click.style(zettel_type_occurrence[1], fg='white'))
+        self.__display_results(zettel_type_occurrences)
 
     def stats_tags(self):
-        column_width = 0
-
         all_zettel_tags = [tag for tags in [zettel.tags for zettel in self.all_zettels_list] for tag in tags]
 
         all_zettel_types = list(fetch_all_zettel_types().keys())
@@ -63,14 +53,27 @@ class ZettelRepository:
         if not len(zettel_tag_occurrences):
             return
 
-        for zettel_tag_occurrence in zettel_tag_occurrences:
-            width = len(zettel_tag_occurrence[0])
-            if width > column_width:
-                column_width = width
+        self.__display_results(zettel_tag_occurrences)
 
-        for zettel_tag_occurrence in zettel_tag_occurrences:
-            click.echo(click.style(zettel_tag_occurrence[0].ljust(column_width, ' '), fg='green') + ' ' +
-                       click.style(zettel_tag_occurrence[1], fg='white'))
+    @staticmethod
+    def __display_results(occurrences):
+        OUTPUT_WIDTH = 80
+
+        name_column_width = max([len(occurrence[0]) for occurrence in occurrences])
+        occurrence_column_width = max([len(str(occurrence[1])) for occurrence in occurrences])
+        number_of_columns_per_row = math.floor(OUTPUT_WIDTH / (name_column_width + occurrence_column_width + 2))
+
+        click.secho('')
+
+        for i, occurrence in enumerate(occurrences):
+            click.secho(occurrence[0].rjust(name_column_width, ' '), fg='green', nl=False)
+            click.secho(' ', nl=False)
+            click.secho(str(occurrence[1]).ljust(occurrence_column_width, ' '), fg='white', nl=False)
+
+            if not (i + 1) % number_of_columns_per_row:
+                click.secho('')
+            else:
+                click.secho(' ', nl=False)
 
     def __load(self):
         all_zettels_list = []

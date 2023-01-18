@@ -117,3 +117,22 @@ class NoBrokenLinksInZettelLinterRule(BaseZettelLinterRule):
             zettel.lint_errors.insert(0, "No Zettel with broken internal links allowed.")
 
         return False
+
+
+MAX_TAG_LENGTH = 20
+
+
+class NoOverlongTagsInZettelLinterRule(BaseZettelLinterRule):
+    def __init__(self):
+        super().__init__()
+
+    @staticmethod
+    def lint(zettel: BaseZettel, zettel_repository: ZettelRepository):
+        for tag in zettel.tags:
+            if len(tag) > MAX_TAG_LENGTH:
+                zettel.lint_errors.append(f'    §{tag} is longer than {MAX_TAG_LENGTH}')
+
+        if len(zettel.lint_errors):
+            zettel.lint_errors.insert(0, "No Zettel with overlong tags allowed.")
+
+        return False
