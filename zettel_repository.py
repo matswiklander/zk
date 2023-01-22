@@ -1,7 +1,5 @@
-import math
 import os
 import re
-import textwrap
 from collections import Counter
 from os.path import exists
 
@@ -57,23 +55,44 @@ class ZettelRepository:
 
     @staticmethod
     def __display_results(occurrences):
-        OUTPUT_WIDTH = 80
+        def split(list_a, chunk_size):
+            for i in range(0, len(list_a), chunk_size):
+                yield list_a[i:i + chunk_size]
 
-        name_column_width = max([len(occurrence[0]) for occurrence in occurrences])
-        occurrence_column_width = max([len(str(occurrence[1])) for occurrence in occurrences])
-        number_of_columns_per_row = math.floor(OUTPUT_WIDTH / (name_column_width + occurrence_column_width + 2))
+        (output_width, _) = os.get_terminal_size()
+        # output_width = 80
+
+        for i in reversed(range(1, output_width + 1)):
+            names = list(split([occurrence[0] for occurrence in occurrences], i))
+            try:
+                names[-1] = names[-1] + [''] * (len(names[-2]) - len(names[-1]))
+            except IndexError:
+                pass
+
+            names_widths = [max(map(len, col)) for col in zip(*names)]
+
+            count = list(split([str(occurrence[1]) for occurrence in occurrences], i))
+            try:
+                count[-1] = count[-1] + [''] * (len(count[-2]) - len(count[-1]))
+            except IndexError:
+                pass
+
+            count_widths = [max(map(len, col)) for col in zip(*count)]
+
+            overall_width = sum(names_widths) + sum(count_widths) + 3 * i
+
+            if overall_width < output_width:
+                break
 
         click.secho('')
 
-        for i, occurrence in enumerate(occurrences):
-            click.secho(occurrence[0].rjust(name_column_width, ' '), fg='green', nl=False)
-            click.secho(' ', nl=False)
-            click.secho(str(occurrence[1]).ljust(occurrence_column_width, ' '), fg='white', nl=False)
-
-            if not (i + 1) % number_of_columns_per_row:
-                click.secho('')
-            else:
+        for i, row in enumerate(names):
+            for j, name in enumerate(row):
+                click.secho(name.rjust(names_widths[j], ' '), fg='green', nl=False)
                 click.secho(' ', nl=False)
+                click.secho(count[i][j].ljust(count_widths[j], ' '), fg='white', nl=False)
+                click.secho('  ', nl=False)
+            click.secho()
 
     def __load(self):
         all_zettels_list = []

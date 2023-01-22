@@ -1,4 +1,3 @@
-import os
 import re
 
 from zettel_repository import ZettelRepository

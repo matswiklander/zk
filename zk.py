@@ -1,9 +1,12 @@
+import math
+import os
+
 import click
 
+from zettel_fix_engine import ZettelFixEngine
 from zettel_linter_engine import ZettelLinterEngine
 from zettel_repository import ZettelRepository
 from zettel_search_engine import ZettelSearchEngine
-from zettel_fix_engine import ZettelFixEngine
 
 
 def print_banner():
@@ -16,11 +19,12 @@ ________ _____/  |__/  |_  ____ |  | |  | _______    _______/  |_  ____   ____
 
     banner = banner.splitlines()
 
-    for index, row in enumerate(banner):
-        if index % 2:
-            click.secho(banner[index], fg='yellow', bold=True)
-        else:
-            click.secho(banner[index], fg='blue', bold=True)
+    (terminal_width, _) = os.get_terminal_size()
+
+    banner_indent = math.floor((terminal_width - max([len(row) for row in banner])) / 2)
+
+    for row in banner:
+        click.secho(' ' * banner_indent + row, fg='yellow', bold=True)
 
 
 @click.group()

@@ -2,8 +2,6 @@ import os
 import re
 from datetime import datetime
 
-import click
-
 
 def fetch_all_zettel_types():
     all_zettel_types = {zettel_class().snake_case(): zettel_class for zettel_class in BaseZettel.__subclasses__()}

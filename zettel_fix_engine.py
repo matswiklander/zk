@@ -1,7 +1,5 @@
-import click
-
-from zettel_repository import ZettelRepository
 from zettel_fixes import fetch_all_zettel_fixes
+from zettel_repository import ZettelRepository
 
 
 class ZettelFixEngine:

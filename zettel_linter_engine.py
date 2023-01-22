@@ -1,7 +1,7 @@
 import click
 
-from zettel_repository import ZettelRepository
 from zettel_linter_rules import fetch_all_zettel_linter_rules
+from zettel_repository import ZettelRepository
 
 
 class ZettelLinterEngine:
