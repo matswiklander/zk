@@ -23,6 +23,10 @@ ________ _____/  |__/  |_  ____ |  | |  | _______    _______/  |_  ____   ____
 
     banner_indent = math.floor((terminal_width - max([len(row) for row in banner])) / 2)
 
+    if banner_indent < 0:
+        banner = 'zettelkasten v1.0'.splitlines()
+        banner_indent = math.floor((terminal_width - max([len(row) for row in banner])) / 2)
+
     for row in banner:
         click.secho(' ' * banner_indent + row, fg='yellow', bold=True)
 

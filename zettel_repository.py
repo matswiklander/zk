@@ -1,3 +1,4 @@
+import math
 import os
 import re
 from collections import Counter
@@ -60,7 +61,6 @@ class ZettelRepository:
                 yield list_a[i:i + chunk_size]
 
         (output_width, _) = os.get_terminal_size()
-        # output_width = 80
 
         for i in reversed(range(1, output_width + 1)):
             names = list(split([occurrence[0] for occurrence in occurrences], i))
@@ -68,6 +68,9 @@ class ZettelRepository:
                 names[-1] = names[-1] + [''] * (len(names[-2]) - len(names[-1]))
             except IndexError:
                 pass
+
+            names.append(['Total'])
+            names[-1] = names[-1] + [''] * (len(names[-2]) - len(names[-1]))
 
             names_widths = [max(map(len, col)) for col in zip(*names)]
 
@@ -77,22 +80,34 @@ class ZettelRepository:
             except IndexError:
                 pass
 
+            count.append([str(sum([occurrence[1] for occurrence in occurrences]))])
+            count[-1] = count[-1] + [''] * (len(count[-2]) - len(count[-1]))
+
             count_widths = [max(map(len, col)) for col in zip(*count)]
 
-            overall_width = sum(names_widths) + sum(count_widths) + 3 * i
+            if i > len(names_widths):
+                i = len(names_widths)
+
+            overall_width = sum(names_widths) + sum(count_widths) + 2 * i + (i - 1)
 
             if overall_width < output_width:
                 break
 
+        indentation = math.floor((output_width - overall_width) / 2)
+
         click.secho('')
 
         for i, row in enumerate(names):
+            click.secho(' ' * indentation, nl=False)
+
             for j, name in enumerate(row):
                 click.secho(name.rjust(names_widths[j], ' '), fg='green', nl=False)
                 click.secho(' ', nl=False)
                 click.secho(count[i][j].ljust(count_widths[j], ' '), fg='white', nl=False)
                 click.secho('  ', nl=False)
             click.secho()
+            if i == len(names) - 2:
+                click.secho()
 
     def __load(self):
         all_zettels_list = []
