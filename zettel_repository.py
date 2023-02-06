@@ -6,6 +6,7 @@ from os.path import exists
 
 import click
 
+from common import get_terminal_width
 from zettel_replacement_engine import ZettelReplacementEngine
 from zettel_types import BaseZettel, fetch_all_zettel_types
 
@@ -60,9 +61,9 @@ class ZettelRepository:
             for i in range(0, len(list_a), chunk_size):
                 yield list_a[i:i + chunk_size]
 
-        (output_width, _) = os.get_terminal_size()
+        terminal_width = get_terminal_width()
 
-        for i in reversed(range(1, output_width + 1)):
+        for i in reversed(range(1, terminal_width + 1)):
             names = list(split([occurrence[0] for occurrence in occurrences], i))
             try:
                 names[-1] = names[-1] + [''] * (len(names[-2]) - len(names[-1]))
@@ -90,10 +91,10 @@ class ZettelRepository:
 
             overall_width = sum(names_widths) + sum(count_widths) + 2 * i + (i - 1)
 
-            if overall_width < output_width:
+            if overall_width < terminal_width:
                 break
 
-        indentation = math.floor((output_width - overall_width) / 2)
+        indentation = math.floor((terminal_width - overall_width) / 2)
 
         click.secho('')
 
