@@ -3,6 +3,7 @@ import os
 
 import click
 
+from common import get_terminal_width
 from zettel_fix_engine import ZettelFixEngine
 from zettel_linter_engine import ZettelLinterEngine
 from zettel_repository import ZettelRepository
@@ -19,7 +20,7 @@ ________ _____/  |__/  |_  ____ |  | |  | _______    _______/  |_  ____   ____
 
     banner = banner.splitlines()
 
-    (terminal_width, _) = os.get_terminal_size()
+    terminal_width = get_terminal_width()
 
     banner_indent = math.floor((terminal_width - max([len(row) for row in banner])) / 2)
 
