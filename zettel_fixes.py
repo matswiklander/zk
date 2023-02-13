@@ -25,7 +25,7 @@ class LinkTitleZettelFix(BaseZettelFix):
 
     @staticmethod
     def fix(zettel: BaseZettel, zettel_repository: ZettelRepository):
-        all_links = re.findall(r'\[(.+?)\]\((.+?)\)', zettel.raw, re.DOTALL | re.MULTILINE)
+        all_links = re.findall(r'\[([^][]+)\]\((.+?)\)', zettel.raw, re.DOTALL | re.MULTILINE)
 
         if len(all_links) == 0:
             return True
