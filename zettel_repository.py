@@ -96,7 +96,7 @@ class ZettelRepository:
 
         indentation = math.floor((terminal_width - overall_width) / 2)
 
-        click.secho('')
+        click.secho()
 
         for i, row in enumerate(names):
             click.secho(' ' * indentation, nl=False)

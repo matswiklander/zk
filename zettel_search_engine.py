@@ -50,6 +50,8 @@ class ZettelSearchEngine:
 
         title_and_summary_width = terminal_width - link_column_width - 1
 
+        click.secho()
+
         for zettel in zettels:
             title_lines = textwrap.wrap(zettel.title, title_and_summary_width)
 
