@@ -40,9 +40,9 @@ class ZettelLinterEngine:
                            click.style(zettel.title, fg='white'))
 
                 if display_errors:
-                    click.echo('')
+                    click.echo()
 
                     for lint_error in zettel.lint_errors:
                         click.echo(' ' * column_width + ' ' + click.style(lint_error, fg='cyan'))
 
-                    click.echo('')
+                    click.echo()

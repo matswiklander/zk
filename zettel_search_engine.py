@@ -3,6 +3,7 @@ import textwrap
 
 import click
 
+from common import get_terminal_width
 from zettel_repository import ZettelRepository
 
 
@@ -36,26 +37,37 @@ class ZettelSearchEngine:
 
     @staticmethod
     def __display_results(zettels, display_summary: bool):
-        column_width = 0
+        terminal_width = get_terminal_width()
+        link_column_width = 0
 
         if not len(zettels):
             return
 
         for zettel in zettels:
             width = len(zettel.path)
-            if width > column_width:
-                column_width = width
+            if width > link_column_width:
+                link_column_width = width
+
+        title_and_summary_width = terminal_width - link_column_width - 1
 
         for zettel in zettels:
-            click.echo(click.style(zettel.path.replace(os.sep, '/').ljust(column_width, ' '), fg='green') + ' ' +
-                       click.style(zettel.title, fg='white'))
+            title_lines = textwrap.wrap(zettel.title, title_and_summary_width)
+
+            for index, title_line in enumerate(title_lines):
+                if index == 0:
+                    click.echo(
+                        click.style(zettel.path.replace(os.sep, '/').rjust(link_column_width, ' '), fg='green') + ' ' +
+                        click.style(title_line, fg='white'))
+                else:
+                    click.echo(' ' * link_column_width + ' ' +
+                               click.style(title_line, fg='white'))
 
             if display_summary:
-                click.echo('')
+                click.echo()
 
-                summary_lines = textwrap.wrap(zettel.summary, 80)
+                summary_lines = textwrap.wrap(zettel.summary, width=title_and_summary_width)
 
                 for summary_line in summary_lines:
-                    click.echo(' ' * column_width + ' ' + click.style(summary_line, fg='cyan'))
+                    click.echo(' ' * link_column_width + ' ' + click.style(summary_line, fg='cyan'))
 
-                click.echo('')
+                click.echo()
