@@ -15,7 +15,7 @@ def print_banner():
       _)_           /777
      (o o)         (o o)
 -ooO--(_)--Ooo-ooO--(_)--Ooo-
-      zettelkasten v1.0"""
+      zettelkasten v1.1"""
 
     banner = banner.splitlines()
 

@@ -154,7 +154,7 @@ class ZettelRepository:
             for file in files:
                 zettel_files.append(os.sep.join([path, file]))
 
-        regex = re.compile(r'.+?(\d{12})\.md')
+        regex = re.compile(r'.+?(\d{8}-\w{4})\.md')
 
         zettel_files = [file for file in zettel_files if regex.search(file)]
 
@@ -163,7 +163,7 @@ class ZettelRepository:
     def __is_taken(self, zettel_id: str):
         zettel_file_paths = self.__fetch_all_zettel_file_paths()
 
-        regex = re.compile(r'.+?(\d{12})\.md')
+        regex = re.compile(r'.+?(\d{8}-\w{4})\.md')
 
         zettel_file_paths = [regex.search(file).group(1) for file in zettel_file_paths if
                              regex.search(file).group(1) == zettel_id]

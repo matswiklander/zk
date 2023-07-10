@@ -1,5 +1,7 @@
 import os
 import re
+import random
+import string
 from datetime import datetime
 
 
@@ -88,7 +90,7 @@ class BaseZettel:
 
     def __extract_id(self, zettel_path):
         # Extract id
-        id = re.findall(r'.+?(\d{12})\.md', zettel_path)
+        id = re.findall(r'.+?(\d{8}-\w{4})\.md', zettel_path)
         if len(id) != 0:
             self.id = id[0].strip()
         else:
@@ -100,7 +102,7 @@ class BaseZettel:
 
     @staticmethod
     def __create_id():
-        return datetime.now().strftime('%Y%m%d%H%M')
+        return datetime.now().strftime('%Y%m%d') + '-' + ''.join(random.choices(string.ascii_lowercase, k=4))
 
     def __extract_all_tags(self):
         return [x.lower() for x in list(dict.fromkeys(re.findall(r'§([\w-]+)', self.raw)))]
@@ -112,7 +114,7 @@ class BaseZettel:
             return True
 
         for link in all_links:
-            zettel_id = re.findall(r'.+?(\d{12})\.md', link[1])
+            zettel_id = re.findall(r'.+?(\d{8}-\w{4})\.md', link[1])
 
             if len(zettel_id):
                 self.links.append(zettel_id[0])
