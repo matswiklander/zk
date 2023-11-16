@@ -55,7 +55,7 @@ class BaseZettel:
         all_zettel_types = fetch_all_zettel_types()
 
         self.tags = self.__extract_all_tags()
-        self.__extract_all_links()
+        self.__extract_all_internal_links()
 
         # Cast self to correct type based on tag
         for tag in self.tags:
@@ -107,8 +107,8 @@ class BaseZettel:
     def __extract_all_tags(self):
         return [x.lower() for x in list(dict.fromkeys(re.findall(r'§([\w-]+)', self.raw)))]
 
-    def __extract_all_links(self):
-        all_links = re.findall(r'\[(.+?)\]\((.+?)\)', self.raw, re.DOTALL | re.MULTILINE)
+    def __extract_all_internal_links(self):
+        all_links = self.__extract_all_links()
 
         if len(all_links) == 0:
             return True
@@ -118,6 +118,10 @@ class BaseZettel:
 
             if len(zettel_id):
                 self.links.append(zettel_id[0])
+
+    def __extract_all_links(self):
+        all_links = re.findall(r'\[(.+?)\]\((.+?)\)', self.raw, re.DOTALL | re.MULTILINE)
+        return all_links
 
     def __fetch_template(self):
         with open(os.sep.join([os.getcwd(), 'templates', self.snake_case() + '.md']), 'r',
@@ -165,6 +169,11 @@ Summary
 
     def __init__(self):
         super().__init__()
+        self.__extract_all_internal_links()
+
+    def __extract_all_internal_links(self):
+        pass
+        # click.echo('Extracting link links')
 
 
 class MermaidZettel(BaseZettel):

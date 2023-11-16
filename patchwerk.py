@@ -5,8 +5,10 @@ import re
 import string
 
 import click
+import toml
 
 from common import get_terminal_width
+from zettel_repository import ZettelRepository
 
 
 def print_banner():
@@ -14,7 +16,7 @@ def print_banner():
       _)_           /777
      (o o)         (o o)
 -ooO--(_)--Ooo-ooO--(_)--Ooo-
-       patchwerk v1.0"""
+       patchwerk v1.1"""
 
     banner = banner.splitlines()
 
@@ -23,7 +25,7 @@ def print_banner():
     banner_indent = math.floor((terminal_width - max([len(row) for row in banner])) / 2)
 
     if banner_indent < 0:
-        banner = 'patchwerk v1.0'.splitlines()
+        banner = 'patchwerk v1.1'.splitlines()
         banner_indent = math.floor((terminal_width - max([len(row) for row in banner])) / 2)
 
     for row in banner:
@@ -47,6 +49,7 @@ def patch():
                 __patch_001_002()
                 break
             case 2:
+                __patch_002_003()
                 break
 
 
@@ -87,6 +90,26 @@ def __patch_001_002():
         old_path = str(file_to_process[0])
         new_path = str(file_to_process[0]).replace(old_filename, new_filename)
         os.rename(old_path, new_path)
+
+    __set_version(__get_version() + 1)
+
+
+def __patch_002_003():
+    zettels = ZettelRepository()
+
+    for zettel in zettels.all_zettels_list:
+        zettel_front_matter = {'title': zettel.title, 'type': zettel.snake_case(),
+                               'date': f'{zettel.id[0:4]}-{zettel.id[4:6]}-{zettel.id[6:8]}',
+                               'tags': zettel.tags}
+        content = '---\n'
+        content += toml.dumps(zettel_front_matter)
+        content += '---\n\n'
+        content += zettel.summary
+        content += '\n'
+        content += zettel.body
+
+        with open(zettel.path, 'w', encoding='utf-8') as fp:
+            fp.write(content)
 
     __set_version(__get_version() + 1)
 
