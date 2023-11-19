@@ -3,6 +3,7 @@ import os
 import random
 import re
 import string
+from datetime import datetime
 
 import click
 import toml
@@ -98,8 +99,9 @@ def __patch_002_003():
     zettels = ZettelRepository()
 
     for zettel in zettels.all_zettels_list:
-        zettel_front_matter = {'title': zettel.title, 'type': zettel.snake_case(),
-                               'date': f'{zettel.id[0:4]}-{zettel.id[4:6]}-{zettel.id[6:8]}',
+        creation_date = datetime.strptime(f'{zettel.id[0:4]}-{zettel.id[4:6]}-{zettel.id[6:8]}', '%Y-%m-%d')
+        zettel_front_matter = {'title': zettel.title, 'zettel_type': zettel.snake_case(),
+                               'date': creation_date,
                                'tags': zettel.tags}
         content = '---\n'
         content += toml.dumps(zettel_front_matter)
