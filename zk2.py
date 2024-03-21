@@ -3,6 +3,9 @@ import random
 import re
 import string
 from datetime import datetime
+from rich.console import Console
+from rich.table import Table
+from rich import box
 
 import click
 import requests
@@ -33,7 +36,7 @@ class Zettel:
 
     def __str__(self):
         return_value = '---\n'
-        return_value += toml.dumps(self.front_matter.__dict__)
+        return_value += toml.dumps(self.front_matter)
         return_value += '---\n'
         return_value += str(self.content or '')
 
@@ -48,8 +51,6 @@ class Zettel:
             frontmatter = re.search(r'---(.+?)---', raw, re.DOTALL | re.MULTILINE).group(1).strip()
 
             self.front_matter = toml.loads(frontmatter)
-
-            click.echo(self.front_matter)
 
 
 @click.group()
@@ -89,23 +90,48 @@ def search():
 def tags(tags: str):
     not_tags = []
     and_tags = []
+
     for tag in tags:
         if tag[:1] == '/':
             not_tags.append(tag[1:])
         else:
             and_tags.append(tag)
 
+    not_tags = set(not_tags)
+    and_tags = set(and_tags)
+
     all_zettels = get_all_zettels()
 
-    click.echo(and_tags)
-    click.echo(not_tags)
+    filtered_zettels = [zettel for zettel in
+                        [zettel for zettel in all_zettels
+                         if and_tags.intersection(set(zettel.front_matter['tags']))]
+                        if not not_tags.intersection(set(zettel.front_matter['tags']))]
+
+    print_search_results(filtered_zettels)
+
+
+def print_search_results(search_results):
+    table = Table(title="Search Results", box=None)
+    table.add_column("Zettel", no_wrap=True, style='Green')
+    table.add_column("Title", style='White')
+
+    for zettel in search_results:
+        table.add_row(zettel.path, zettel.front_matter['title'])
+
+    Console().print(table, justify="left")
 
 
 def get_all_zettels():
+    all_zettels = []
+
     zettels_root_path = get_zettels_root_path()
+
     for dir_entry in os.scandir(zettels_root_path):
         zettel = Zettel('')
         zettel.load(dir_entry.path, dir_entry.name)
+        all_zettels.append(zettel)
+
+    return all_zettels
 
 
 def save_zettel(zettel: Zettel):

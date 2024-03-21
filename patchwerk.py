@@ -7,9 +7,12 @@ from datetime import datetime
 
 import click
 import toml
+from dotenv import load_dotenv
 
 from common import get_terminal_width
 from zettel_repository import ZettelRepository
+
+load_dotenv()
 
 
 def print_banner():
