@@ -3,15 +3,14 @@ import random
 import re
 import string
 from datetime import datetime
-from rich.console import Console
-from rich.table import Table
-from rich import box
 
 import click
 import requests
 import toml
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
+from rich.console import Console
+from rich.table import Table
 
 load_dotenv()
 
@@ -36,7 +35,7 @@ class Zettel:
 
     def __str__(self):
         return_value = '---\n'
-        return_value += toml.dumps(self.front_matter)
+        return_value += toml.dumps(vars(self.front_matter))
         return_value += '---\n'
         return_value += str(self.content or '')
 
